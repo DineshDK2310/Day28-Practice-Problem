@@ -1,5 +1,6 @@
 package com.bridgelab.addressbookday28;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class AddressBookCollection {
@@ -30,6 +31,8 @@ public class AddressBookCollection {
 			System.out.println("16.Read data from file");
 			System.out.println("17.Write data to csv file");
 			System.out.println("18.Read data from csv file");
+			System.out.println("19.Write data to csv file");
+			System.out.println("20.Read data from csv file");
 			
 			ch= sc.nextInt();
 			switch(ch) {
@@ -102,6 +105,20 @@ public class AddressBookCollection {
 				break;
 			case 18:
 				detail.readFileDataCSV();
+				break;
+			case 19:
+				try {
+					detail.writeDataInJSon();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				break;
+			case 20:
+				try {
+					detail.readDataFromJson();
+				} catch (IOException e) {
+					e.printStackTrace();
+				};
 				break;
 			
 			}System.out.println("Do you want to continue? if yes press 1");
