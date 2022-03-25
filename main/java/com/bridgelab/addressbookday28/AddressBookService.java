@@ -44,7 +44,12 @@ public class AddressBookService {
 		return addressBookData.get(0).equals(getAddressBookData(name));
 	}
 
-	
+	public List<AddressBookData> readAddressBookForDateRange(IOService ioService, LocalDate startDate, LocalDate endDate) {
+		if (ioService.equals(IOService.DB_IO)) {
+			return addressBookConnection.getAddressBookForDateRange(startDate, endDate);
+		}
+		return null;
+	}
 
 	public static void main(String[] args) throws AddressBookException {
 		AddressBookService a = new AddressBookService();

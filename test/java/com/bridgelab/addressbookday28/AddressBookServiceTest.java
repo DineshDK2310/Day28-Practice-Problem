@@ -24,4 +24,14 @@ public class AddressBookServiceTest {
         Assert.assertTrue(result);
     }
 	
+	@Test
+    public void givenDate_ShouldRetrieveTheAddressBookRecord_BasedOnThePerticularRange() {
+        AddressBookService addressBookService = new AddressBookService();
+        addressBookService.readAddressBookData(DB_IO);
+        LocalDate startDate = LocalDate.of(2018, 01, 01);
+        LocalDate endDate = LocalDate.now();
+        List< AddressBookData> addressBookData=
+                addressBookService.readAddressBookForDateRange(DB_IO, startDate, endDate);
+        Assert.assertEquals(2, addressBookData.size());
+    }
 }

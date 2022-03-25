@@ -116,5 +116,9 @@ public class AddressBookConnection {
         }
     }
     
-    
+    public List<AddressBookData> getAddressBookForDateRange(LocalDate startDate, LocalDate endDate) {
+        String query = String.format("SELECT * FROM address_book WHERE date_added BETWEEN '%s' AND '%s';",
+                Date.valueOf(startDate), Date.valueOf(endDate));
+        return this.getAddressBookDataUsingDB(query);
+    }
 }
