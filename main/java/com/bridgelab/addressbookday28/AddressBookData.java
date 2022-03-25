@@ -28,11 +28,10 @@ public class AddressBookData {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof AddressBookData)) return false;
-		AddressBookData that = (AddressBookData) o;
-		return  typeId == that.typeId &&
-				Objects.equals(firstName, that.firstName) &&
-				Objects.equals(lastName, that.lastName) &&
+		if (!(o instanceof AddressBookData that)) return false;
+		return  Objects.equals(typeId,that.typeId )&&
+				firstName.equals(that.firstName) &&
+				lastName.equals(that.lastName) &&
 				Objects.equals(address, that.address) &&
 				Objects.equals(phoneNumber, that.phoneNumber) &&
 				Objects.equals(email, that.email) &&

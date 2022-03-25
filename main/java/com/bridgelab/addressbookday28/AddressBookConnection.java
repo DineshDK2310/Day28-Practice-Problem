@@ -2,6 +2,7 @@ package com.bridgelab.addressbookday28;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,6 +14,7 @@ public class AddressBookConnection {
 	public Connection connection = null;
 	Statement statement = null;
 	ResultSet resultSet = null;
+	private PreparedStatement addressBookDataStatement;
 	private static AddressBookConnection addressBookConnection;
 
 	public AddressBookConnection() {
@@ -26,19 +28,20 @@ public class AddressBookConnection {
 	}
 
 	private Connection getConnection() throws SQLException {
-		String dbURL = "jdbc:mysql://localhost:3306/addressbook_services";
+		String dbURL = "jdbc:mysql://localhost:3306/addressbook_services?useSSL=false";
 		String userName="root";
 		String password="Rash@123";
-		Connection connection;
+//		Connection connection;
 		connection = DriverManager.getConnection(dbURL,userName,password);
-		System.out.println(" Database connection is successfull");
+		System.out.println(connection + "Database connection is successfull");
 		return connection;
 	}
 
-	public static void main(String[] args) throws SQLException {
-		AddressBookConnection a =new AddressBookConnection();
-		a.getConnection();
-	}
+//	public static void main(String[] args) throws SQLException {
+//		AddressBookConnection a =new AddressBookConnection();
+//		a.getConnection();
+//	}
+	
 	public List<AddressBookData> readDate() {
 		String query = "SELECT * from address_book";
 		return this.getAddressBookDataUsingDB(query);
@@ -69,11 +72,45 @@ public class AddressBookConnection {
 				String city = resultSet.getString("city");
 				String state = resultSet.getString("state");
 				String zip = resultSet.getString("zip");
-				addressBookList.add(new AddressBookData(typeId, firstName, lastName,address, phoneNumber, email, city, state, zip));
+				addressBookList.add(new AddressBookData(typeId, firstName, lastName, address, phoneNumber, email, city, state, zip));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return addressBookList;
 	}
+	
+	private void prepareStatementForAddressBook() {
+        try {
+            Connection connection = this.getConnection();
+            String sql = "SELECT * FROM  address_book WHERE `fname` = ?";
+            addressBookDataStatement = connection.prepareStatement(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public List<AddressBookData> getAddressBookData(String firstName) {
+        List<AddressBookData> addressBookDataList = null;
+        if (this.addressBookDataStatement == null) {
+            this.prepareStatementForAddressBook();
+        }
+        try {
+            addressBookDataStatement.setString(1, firstName);
+            ResultSet resultSet = addressBookDataStatement.executeQuery();
+            addressBookDataList =this.getAddressBookData(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return addressBookDataList;
+    }
+
+    public int updateAddressBookRecord(String name, String phoneNumber) throws AddressBookException {
+        String query = String.format("update  address_book set phone = '%s' where fname= '%s' ;", phoneNumber, name);
+        try (Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            return statement.executeUpdate(query);
+        }catch (SQLException e) {
+            throw new AddressBookException(e.getMessage(), AddressBookException.ExceptionType.DatabaseException);
+        }
+    }
 }

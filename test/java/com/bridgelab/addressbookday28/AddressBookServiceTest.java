@@ -13,4 +13,13 @@ public class AddressBookServiceTest {
 		List<AddressBookData> addressBookDataList = addressBookService.readAddressBookData(DB_IO);
 		Assert.assertEquals(5,addressBookDataList.size());
 	}
+	
+	@Test
+    public void givenNewPhoneNumber_ShouldUpdateTheRecorAndSyncWithDataBase() throws AddressBookException {
+        AddressBookService addressBookService = new AddressBookService();
+        addressBookService.readAddressBookData(DB_IO);
+        addressBookService.updateRecord("Rash", "9667860846");
+        boolean result = addressBookService.checkRecordSyncWithDB("Rash");
+        Assert.assertTrue(result);
+    }
 }

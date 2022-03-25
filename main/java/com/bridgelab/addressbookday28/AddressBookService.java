@@ -19,4 +19,30 @@ public class AddressBookService {
 	        }
 	        return addressBookList;
 	    }
+	    
+	    public void updateRecord(String name, String phoneNumber) throws AddressBookException
+	    {
+	        int result = addressBookConnection.updateAddressBookRecord(name, phoneNumber);
+	        if (result==0)return;
+	        AddressBookData  addressBookData=this.getAddressBookData(name);
+	        if (addressBookData!=null) addressBookData.phoneNumber=phoneNumber;
+	    }
+
+	    private AddressBookData getAddressBookData(String name)
+	    {
+	        return this.addressBookList.stream()
+	                .filter(addressBookData -> addressBookData.firstName.equals(name))
+	                .findFirst()
+	                .orElse(null);
+	    }
+
+	    public boolean checkRecordSyncWithDB(String name)
+	    {
+	        List<AddressBookData> addressBookData= addressBookConnection.getAddressBookData(name);
+	        return addressBookData.get(0).equals(getAddressBookData(name));
+	    }
+	public static void main(String[] args) throws AddressBookException {
+		AddressBookService a = new AddressBookService();
+		a.updateRecord("Rash", "9667860846");
+	}
 }
