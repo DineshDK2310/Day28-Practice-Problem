@@ -1,46 +1,51 @@
 package com.bridgelab.addressbookday28;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class AddressBookService {
-	 private List<AddressBookData> addressBookList;
+	private List<AddressBookData> addressBookList;
 
-	    public enum IOService {DB_IO}
+	public enum IOService {DB_IO}
 
-	    private static AddressBookConnection addressBookConnection;
+	private static AddressBookConnection addressBookConnection;
 
-	    public AddressBookService() {
-	        addressBookConnection = AddressBookConnection.getInstance();
-	    }
+	public AddressBookService() {
+		addressBookConnection = AddressBookConnection.getInstance();
+	}
 
-	    public List<AddressBookData> readAddressBookData(IOService ioService) {
-	        if (ioService.equals(IOService.DB_IO)) {
-	            this.addressBookList = addressBookConnection.readDate();
-	        }
-	        return addressBookList;
-	    }
-	    
-	    public void updateRecord(String name, String phoneNumber) throws AddressBookException
-	    {
-	        int result = addressBookConnection.updateAddressBookRecord(name, phoneNumber);
-	        if (result==0)return;
-	        AddressBookData  addressBookData=this.getAddressBookData(name);
-	        if (addressBookData!=null) addressBookData.phoneNumber=phoneNumber;
-	    }
+	public List<AddressBookData> readAddressBookData(IOService ioService) {
+		if (ioService.equals(IOService.DB_IO)) {
+			this.addressBookList = addressBookConnection.readDate();
+		}
+		return addressBookList;
+	}
 
-	    private AddressBookData getAddressBookData(String name)
-	    {
-	        return this.addressBookList.stream()
-	                .filter(addressBookData -> addressBookData.firstName.equals(name))
-	                .findFirst()
-	                .orElse(null);
-	    }
+	public void updateRecord(String name, String phoneNumber) throws AddressBookException
+	{
+		int result = addressBookConnection.updateAddressBookRecord(name, phoneNumber);
+		if (result==0)return;
+		AddressBookData  addressBookData = this.getAddressBookData(name);
+		if (addressBookData!=null) addressBookData.phoneNumber=phoneNumber;
+	}
 
-	    public boolean checkRecordSyncWithDB(String name)
-	    {
-	        List<AddressBookData> addressBookData= addressBookConnection.getAddressBookData(name);
-	        return addressBookData.get(0).equals(getAddressBookData(name));
-	    }
+	private AddressBookData getAddressBookData(String name)
+	{
+		return this.addressBookList.stream()
+				.filter(addressBookData -> addressBookData.firstName.equals(name))
+				.findFirst()
+				.orElse(null);
+	}
+
+	public boolean checkRecordSyncWithDB(String name)
+	{
+		List<AddressBookData> addressBookData= addressBookConnection.getAddressBookData(name);
+		System.out.println(addressBookData);
+		return addressBookData.get(0).equals(getAddressBookData(name));
+	}
+
+	
+
 	public static void main(String[] args) throws AddressBookException {
 		AddressBookService a = new AddressBookService();
 		a.updateRecord("Rash", "9667860846");
