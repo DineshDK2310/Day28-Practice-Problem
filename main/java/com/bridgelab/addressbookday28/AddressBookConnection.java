@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddressBookConnection {
+	
 	public Connection connection = null;
 	Statement statement = null;
 	ResultSet resultSet = null;
